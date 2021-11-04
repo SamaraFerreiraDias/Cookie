@@ -5,10 +5,10 @@
 library(readr)      #Ler arquivo
 library(dplyr)      #Tratar dados
 library(cluster)    #K-means
-library(ggplot2)    #Plotar gráficos
+library(ggplot2)    #Plotar grÃ¡ficos
 library(factoextra) #Metodo elbow
-library(tidyverse)  #Manipulação de dataframe
-library(corrplot)   #Plotar gráficos
+library(tidyverse)  #ManipulaÃ§Ã£o de dataframe
+library(corrplot)   #Plotar grÃ¡ficos
 library(GGally)
 library(knitr)
 library(arules)     #Agrupar pacotes
@@ -17,7 +17,7 @@ library(arules)     #Agrupar pacotes
 # Carregar Dataset
 #===============================================================================
 
-#Caracteristicas (Cor, aroma, sabor, Aceitação) como variáveis
+#Caracteristicas (Cor, aroma, sabor, AceitaÃ§Ã£o) como variÃ¡veis
 dados_analise_C = read.csv2(file = 'dados_tratados_caracteristicas.csv')
 #View(dados_analise_C)
 #str(dados_analise_C)
@@ -25,7 +25,7 @@ dados_analise_C1 = dados_analise_C[,-1] #dataframe sem a variavel julgador
 #View(dados_analise1)
 dados_analise_C2 = dados_analise_C1[,-1]
 
-#Tipos de biscoitos (Controle, F1, F2, F3 e AceitacaoGlobal) como variáveis
+#Tipos de biscoitos (Controle, F1, F2, F3 e AceitacaoGlobal) como variÃ¡veis
 dados_analise_B = read.csv2(file = 'dados_tratados_biscoitos.csv')
 #View(dados_analise_B)
 #str(dados_analise_B) 
@@ -34,7 +34,7 @@ dados_analise_B = read.csv2(file = 'dados_tratados_biscoitos.csv')
 # Histograma para cada tributo
 #===============================================================================
 
-#Histograma para características
+#Histograma para caracterÃ­sticas
 dados_analise_C2 %>% gather(Attributes, value, 1:4) %>% ggplot(aes(x=value, fill=Attributes)) +
   geom_histogram(colour="black", show.legend=FALSE) + facet_wrap(~Attributes, scales="free_x") +
   labs(x="Notas", y="Frequencia",title="Atributos Caracteristicas dos Biscoitos - Histogramas") + theme_bw()
@@ -42,20 +42,20 @@ dados_analise_C2 %>% gather(Attributes, value, 1:4) %>% ggplot(aes(x=value, fill
 #Histograma para tipos de biscoitos
 dados_analise_B %>% gather(Attributes, value, 3:6) %>% ggplot(aes(x=value, fill=Attributes)) +
   geom_histogram(colour="black", show.legend=FALSE) + facet_wrap(~Attributes, scales="free_x") +
-  labs(x="Notas", y="Frequencia",title="Avaliação dos Biscoitos - Histogramas") + theme_bw()
+  labs(x="Notas", y="Frequencia",title="AvaliaÃ§Ã£o dos Biscoitos - Histogramas") + theme_bw()
 
 #===============================================================================
 # Boxplot para cada atrituto (Atributo que mais se destacou)
 #===============================================================================
 
-#Boxplot para características
+#Boxplot para caracterÃ­sticas
 dados_analise_C1 %>% gather(Attributes, values, c(2:5)) %>% ggplot(aes(x=reorder(Attributes, values, FUN=median), y=values, fill=Attributes)) +
   geom_boxplot(show.legend=FALSE) + labs(title="Atributos dos Biscoitos - Boxplots") + theme_bw() +
   theme(axis.title.y=element_blank(), axis.title.x=element_blank()) + ylim(0, 35) + coord_flip()
 
 #Boxplot para tipos de biscoitos
 dados_analise_B %>% gather(Attributes, values, c(3:6)) %>% ggplot(aes(x=reorder(Attributes, values, FUN=median), y=values, fill=Attributes)) +
-  geom_boxplot(show.legend=FALSE) + labs(title="Avaliação dos Biscoitos - Boxplots") + theme_bw() +
+  geom_boxplot(show.legend=FALSE) + labs(title="AvaliaÃ§Ã£o dos Biscoitos - Boxplots") + theme_bw() +
   theme(axis.title.y=element_blank(), axis.title.x=element_blank()) + ylim(0, 35) + coord_flip()
 
 #===============================================================================
@@ -65,7 +65,7 @@ dados_analise_B %>% gather(Attributes, values, c(3:6)) %>% ggplot(aes(x=reorder(
 corrplot(cor(dados_analise_C2), type="upper", method="ellipse", tl.cex=0.9) 
 
 #===============================================================================
-# Aplicação do K-means (K = 5)
+# AplicaÃ§Ã£o do K-means (K = 5)
 #===============================================================================
 
 #mudar a escala das variaveis
@@ -104,10 +104,10 @@ dados_cluster = dados_analise_C
 
 #===============================================================================
 #*****************Analisado Resultados do cluster (k = 5)*********************
-#***********Retirando os dados de julgadores que não gostam de biscoitos********
+#***********Retirando os dados de julgadores que nÃ£o gostam de biscoitos********
 #===============================================================================
 
-#Proporção de tipos de biscoitos por clusters
+#ProporÃ§Ã£o de tipos de biscoitos por clusters
 qtdePorProd = dados_cluster %>% group_by(Produto) %>% summarise(Qtde = n())
 
 #write_csv2(qtdePorProd, 'dados_cluster5_qtdePorProd.csv')
@@ -115,7 +115,7 @@ qtdePorProd = dados_cluster %>% group_by(Produto) %>% summarise(Qtde = n())
 qtdePorGrupo = dados_cluster %>% group_by(cluster) %>% summarise(Qtde = n()) %>%
   mutate(Prop = round(100 * Qtde / sum(Qtde), 2))
 
-#Proporção de tipos de biscoitos por clusters
+#ProporÃ§Ã£o de tipos de biscoitos por clusters
 propPorGrupo = dados_cluster %>% group_by(cluster, Produto) %>% summarise(Qtde = n()) %>%
   mutate(Prop = round(100 * Qtde / sum(Qtde), 2))
 
@@ -129,11 +129,11 @@ medianaPorGrupo = dados_cluster %>% group_by(cluster, Produto) %>%
 #write_csv2(medianaPorGrupo, 'dados_cluster5_medianas.csv')
 
 
-#Excluir clusters com dados de pessoas que não gostam de biscoito
+#Excluir clusters com dados de pessoas que nÃ£o gostam de biscoito
 novo_cluster = dados_cluster %>% filter (cluster > "2") %>% mutate(cluster = NULL)
 
 #===============================================================================
-# Aplicação do K-means (K = 3)
+# AplicaÃ§Ã£o do K-means (K = 3)
 #===============================================================================
 
 #mudar a escala das variaveis
@@ -173,14 +173,14 @@ print(novo_cluster)
 #***************** Analisado Resultados do cluster (k = 3)***********************
 #===============================================================================
 
-#Proporção de tipos de biscoitos por clusters
+#ProporÃ§Ã£o de tipos de biscoitos por clusters
 qtdePorProd = novo_cluster %>% group_by(Produto) %>% summarise(Qtde = n())
 qtdePorGrupo = novo_cluster %>% group_by(cluster) %>% summarise(Qtde = n()) %>%
   mutate(Prop = round(100 * Qtde / sum(Qtde), 2))
 
 #write_csv2(medianaPorGrupo, 'qtdePorProd_cluster3.csv')
 
-#Proporção de tipos de biscoitos por clusters
+#ProporÃ§Ã£o de tipos de biscoitos por clusters
 propPorGrupo = novo_cluster %>% group_by(cluster, Produto) %>% summarise(Qtde = n()) %>%
   mutate(Prop = round(100 * Qtde / sum(Qtde), 2))
 
